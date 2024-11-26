@@ -55,7 +55,7 @@ def index():
     for tag in tags:
       calculate_psd(tag,date)
       
-    next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=1, minute=0, second=0, microsecond=0) + timedelta(days=1))
+    next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=1))
     wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
     time.sleep(wait_time)
 
