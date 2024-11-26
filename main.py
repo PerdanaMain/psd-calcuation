@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from log import print_log
 from model import *
 import numpy as np # type: ignore
 import time
@@ -43,9 +44,9 @@ def calculate_psd(tag, date, equipment_id):
     create_feature(equipment_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_1, timestamp)
     create_feature(equipment_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
     create_feature(equipment_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_3, timestamp)
-       
 
     print(f"Total data for tag {tag}: {len(fft_values)} processed successfully.")
+    print_log(f"Total data for tag {tag}: {len(fft_values)} processed successfully.")
 
 def index():
   while True:
@@ -57,6 +58,9 @@ def index():
       
     next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=1))
     wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
+
+    print_log(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
+
     time.sleep(wait_time)
 
 

@@ -1,6 +1,7 @@
 import pytz
 import uuid
 from datetime import datetime
+from log import print_log
 from database import *
 
 def get_fft_value(tag, date):
@@ -18,6 +19,7 @@ def get_fft_value(tag, date):
         return result
     except Exception as e:
         print("An exception occurred:", e)
+        print_log("An exception occurred:", e)
         return None
     finally:
         if conn:
@@ -57,6 +59,7 @@ def create_features(
         cur.close()
     except Exception as e:
         print("An exception occurred:", e)
+        print_log("An exception occurred:", e)
         return None
     finally:
         if conn:
@@ -106,8 +109,10 @@ def create_feature(equipment_id, feature_id, feature_value, date_time):
         cur.close()
 
         print("Feature created successfully.")
+        print_log("Feature created successfully.")
     except Exception as e:
         print("An exception occurred:", e)
+        print_log("An exception occurred:", e)
         return None
     finally:
         # Tutup koneksi jika ada
