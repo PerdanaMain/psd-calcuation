@@ -52,9 +52,13 @@ def index():
   while True:
     date = datetime.now(pytz.timezone("Asia/Jakarta"))
 
-    tags = [3871,3865,3866,3870]
+    tags = [[3871, "b538d5d4-7e3c-46ac-b3f0-c35136317557"],
+            [3865, "990fb37b-33c4-44f4-b6a8-cf4b9d3b9c74"],
+            [3866, "2462c395-95ee-49b3-8abb-dc8dd67276bc"],
+            [3870, "8294f761-cfd1-44d9-966a-613ab1b89fe9"]
+            ]
     for tag in tags:
-      calculate_psd(tag,date)
+      calculate_psd(tag[0], date, tag[1])
       
     next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=1))
     wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()

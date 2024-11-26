@@ -19,52 +19,11 @@ def get_fft_value(tag, date):
         return result
     except Exception as e:
         print("An exception occurred:", e)
-        print_log("An exception occurred:", e)
+        print_log(f"An exception occurred:{e}")
         return None
     finally:
         if conn:
             conn.close()
-
-def create_features(
-      tag_id,
-      psd,
-      total_psd_interval_1,
-      total_psd_interval_2,
-      total_psd_interval_3,
-      max_psd_interval_1,
-      max_psd_interval_2,
-      max_psd_interval_3,
-      date
-    ):
-    conn = None
-    try:
-        conn = getConnection()
-        
-        query = """
-        INSERT INTO dl_psd_value (
-            tag_id, psd_value, total_value_1, total_value_2, total_value_3,
-            max_value_1, max_value_2, max_value_3, created_at, updated_at
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        
-        # Data untuk satu baris
-        data = (
-            tag_id, psd, total_psd_interval_1, total_psd_interval_2, total_psd_interval_3,
-            max_psd_interval_1, max_psd_interval_2, max_psd_interval_3, date.strftime("%Y-%m-%dT%H:%M:%SZ"), date.strftime("%Y-%m-%dT%H:%M:%SZ")
-        )
-        
-        cur = conn.cursor()
-        cur.execute(query, data)  # Gunakan `execute` untuk satu set data
-        conn.commit()
-        cur.close()
-    except Exception as e:
-        print("An exception occurred:", e)
-        print_log("An exception occurred:", e)
-        return None
-    finally:
-        if conn:
-            conn.close()
-
 
 def create_feature(equipment_id, feature_id, feature_value, date_time):
     conn = None
@@ -82,7 +41,7 @@ def create_feature(equipment_id, feature_id, feature_value, date_time):
 
         # Query SQL untuk insert
         query = """
-        INSERT INTO dl_features_data (
+        INSERT INTO dl_features_data_backup (
             id, equipment_id, features_id, date_time, value, created_at, updated_at
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
@@ -112,7 +71,7 @@ def create_feature(equipment_id, feature_id, feature_value, date_time):
         print_log("Feature created successfully.")
     except Exception as e:
         print("An exception occurred:", e)
-        print_log("An exception occurred:", e)
+        print_log(f"An exception occurred:{e}")
         return None
     finally:
         # Tutup koneksi jika ada
