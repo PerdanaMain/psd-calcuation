@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from model import *
-import numpy as np # type: ignore
-import time
 import pytz
+import time
+import numpy as np # type: ignore
 
 def calculate_psd(tag, date, equipment_id):
     fft_values = get_fft_value(tag, date)
@@ -47,19 +47,36 @@ def calculate_psd(tag, date, equipment_id):
 
     print(f"Total data for tag {tag}: {len(fft_values)} processed successfully.")
 
+
 def index():
-  while True:
-    date = datetime.now(pytz.timezone("Asia/Jakarta"))
+    start_date = datetime(2024, 10, 21, tzinfo=pytz.timezone("Asia/Jakarta"))
+    current_date = datetime.now(pytz.timezone("Asia/Jakarta"))
 
-    tags = [3871,3865,3866,3870]
-    for tag in tags:
-      calculate_psd(tag,date)
-      
-    next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=1, minute=0, second=0, microsecond=0) + timedelta(days=1))
-    wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
-    time.sleep(wait_time)
+    # Tags yang akan dihitung
+    tags = [[3871, "b538d5d4-7e3c-46ac-b3f0-c35136317557"],
+            [3865, "990fb37b-33c4-44f4-b6a8-cf4b9d3b9c74"],
+            [3866, "2462c395-95ee-49b3-8abb-dc8dd67276bc"],
+            [3870, "8294f761-cfd1-44d9-966a-613ab1b89fe9"]
+            ]
 
+    while start_date <= current_date:
+        # Hitung PSD untuk setiap tag
+        for tag in tags:
+            calculate_psd(tag[0], start_date, tag[1])
 
+        # Cetak log proses
+        print(f"PSD calculated for {start_date.strftime('%Y-%m-%d')}")
+
+        # Pindah ke hari berikutnya
+        start_date += timedelta(days=1)
+
+        # Perbarui current_date
+        current_date = datetime.now(pytz.timezone("Asia/Jakarta"))
+
+    # next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=3, minute=0, second=0, microsecond=0)
+    #                   + timedelta(days=1))
+    # wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
+    # time.sleep(wait_time)
 
 if __name__ == "__main__":
   index()

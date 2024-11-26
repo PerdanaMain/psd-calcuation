@@ -16,3 +16,17 @@ def getConnection():
     except Exception as e:
         print(f"Error connecting to the database: {e}")
         return None
+
+def get_main_connection():
+    try:
+        conn = psycopg2.connect(
+            host=os.getenv("DB_MAIN_HOST"),
+            database=os.getenv("DB_MAIN_NAME"),
+            user=os.getenv("DB_MAIN_USER"),
+            password=os.getenv("DB_MAIN_PASS"),
+            port=os.getenv("DB_MAIN_PORT"),
+        )
+        return conn
+    except Exception as e:
+        print(f"Error connecting to the database: {e}")
+        return None
