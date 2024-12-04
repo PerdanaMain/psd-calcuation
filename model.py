@@ -4,14 +4,31 @@ from datetime import datetime
 from log import print_log
 from database import *
 
+def get_vibration_parts():
+    try:
+        conn = get_main_connection()
+        cur = conn.cursor()
+
+        query = "SELECT id, web_id, type_id, part_name  FROM pf_parts WHERE type_id = '673b26b9-fb94-40aa-8c33-ccea214c0ef3'"
+
+        cur.execute(query)
+        parts = cur.fetchall()
+        return parts
+    except Exception as e:
+        print(f'An exception occurred: {e}')
+        print_log(f'An exception occurred: {e}')
+    finally:
+        if conn:
+            conn.close()
+
 def get_fft_value(tag, date):
     conn = None
     try:
         conn = getConnection()
         with conn.cursor() as cur:
-            query = """SELECT id, tag_id, value, created_at
+            query = """SELECT id, part_id, value, created_at
             FROM dl_fft_fetch 
-            WHERE tag_id = %s
+            WHERE part_id = %s
             AND created_at::date = %s::date
             """
             cur.execute(query, (tag, date.strftime("%Y-%m-%dT%H:%M:%SZ")))
@@ -41,8 +58,8 @@ def create_feature(equipment_id, feature_id, feature_value, date_time):
 
         # Query SQL untuk insert
         query = """
-        INSERT INTO dl_features_data_backup (
-            id, equipment_id, features_id, date_time, value, created_at, updated_at
+        INSERT INTO dl_features_data (
+            id, part_id, features_id, date_time, value, created_at, updated_at
         ) VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 

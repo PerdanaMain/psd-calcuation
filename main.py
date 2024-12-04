@@ -5,8 +5,8 @@ import numpy as np # type: ignore
 import time
 import pytz
 
-def calculate_psd(tag, date, equipment_id):
-    fft_values = get_fft_value(tag, date)
+def calculate_psd(part_id, date):
+    fft_values = get_fft_value(part_id, date)
     values = []
     timestamp = fft_values[0][3]
 
@@ -37,33 +37,31 @@ def calculate_psd(tag, date, equipment_id):
     psd = float(np.sum(data))
 
     # Iterasi melalui semua timestamp untuk membuat fitur
-    create_feature(equipment_id, "5765a11a-2f89-45dc-a37b-46d384a1ff9e", psd, timestamp)
-    create_feature(equipment_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_1, timestamp)
-    create_feature(equipment_id, "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8", total_psd_interval_2, timestamp)
-    create_feature(equipment_id, "a94a2f9a-d798-4e54-8373-ff68f486f266", total_psd_interval_3, timestamp)
-    create_feature(equipment_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_1, timestamp)
-    create_feature(equipment_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
-    create_feature(equipment_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_3, timestamp)
+    create_feature(part_id, "5765a11a-2f89-45dc-a37b-46d384a1ff9e", psd, timestamp)
+    create_feature(part_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_1, timestamp)
+    create_feature(part_id, "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8", total_psd_interval_2, timestamp)
+    create_feature(part_id, "a94a2f9a-d798-4e54-8373-ff68f486f266", total_psd_interval_3, timestamp)
+    create_feature(part_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_1, timestamp)
+    create_feature(part_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
+    create_feature(part_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_3, timestamp)
 
-    print(f"Total data for tag {tag}: {len(fft_values)} processed successfully.")
-    print_log(f"Total data for tag {tag}: {len(fft_values)} processed successfully.")
+    print(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
+    print_log(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
 
 def index():
   while True:
     date = datetime.now(pytz.timezone("Asia/Jakarta"))
 
-    tags = [[3871, "b538d5d4-7e3c-46ac-b3f0-c35136317557"],
-            [3865, "990fb37b-33c4-44f4-b6a8-cf4b9d3b9c74"],
-            [3866, "2462c395-95ee-49b3-8abb-dc8dd67276bc"],
-            [3870, "8294f761-cfd1-44d9-966a-613ab1b89fe9"]
-            ]
+    tags = get_vibration_parts()
+    print(tags)
     for tag in tags:
-      calculate_psd(tag[0], date, tag[1])
+      calculate_psd(tag[0], date)
       
     next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=1))
     wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
 
-    print_log(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
+    # print_log(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
 
     time.sleep(wait_time)
 
