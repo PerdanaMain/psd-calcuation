@@ -30,6 +30,7 @@ def get_feature_values(part_id,features_id):
             SELECT id, part_id, date_time, value 
             FROM dl_features_data
             WHERE part_id = %s AND features_id = %s
+            order by date_time asc
             """,
             (part_id, features_id),
         )

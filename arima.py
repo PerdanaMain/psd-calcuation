@@ -1,3 +1,4 @@
+from more_itertools import last
 from requests import get # type: ignore
 from model import *
 from datetime import timedelta
@@ -34,7 +35,6 @@ def train_arima_model(train_data, order):
 
 def execute_arima(equipment_id, features_id):
     data = get_feature_values(equipment_id, features_id)
-
     if len(data) == 0:
         print(f"No data found for equipment_id: {equipment_id}, features_id: {features_id}")
         return
@@ -74,11 +74,11 @@ def execute_arima(equipment_id, features_id):
     # Membuat timestamp untuk 7 hari ke depan
     last_date = timestamps[-1]
     future_timestamps = [(last_date + timedelta(days=i + 1)).strftime("%Y-%m-%d") for i in range(n_days)]
-
-    # delete old prediction
+    
+    # # delete old prediction
     delete_predicts(equipment_id, features_id)
 
-    # Simpan hasil prediksi
+    # # Simpan hasil prediksi
     create_predict(equipment_id, features_id, future_forecast, future_timestamps)
 
     print(f"ARIMA prediction for equipment_id: {equipment_id} finished.")
