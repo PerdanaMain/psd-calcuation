@@ -57,8 +57,8 @@ def index():
     date = datetime.now(pytz.timezone("Asia/Jakarta"))
 
     tags = get_vibration_parts()
-    # for tag in tags:
-    #   calculate_psd(tag[0], date)
+    for tag in tags:
+      calculate_psd(tag[0], date)
 
     for tag in tags:
       execute_arima(tag[0], "8baab334-6e63-487d-91ea-cf8cd7f8b88d")
