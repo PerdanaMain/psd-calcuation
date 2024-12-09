@@ -39,12 +39,12 @@ def calculate_psd(part_id, date):
 
     # Iterasi melalui semua timestamp untuk membuat fitur
     create_feature(part_id, "5765a11a-2f89-45dc-a37b-46d384a1ff9e", psd, timestamp)
-    create_feature(part_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_1, timestamp)
+    create_feature(part_id, "a94a2f9a-d798-4e54-8373-ff68f486f266", total_psd_interval_1, timestamp)
     create_feature(part_id, "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8", total_psd_interval_2, timestamp)
-    create_feature(part_id, "a94a2f9a-d798-4e54-8373-ff68f486f266", total_psd_interval_3, timestamp)
-    create_feature(part_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_1, timestamp)
+    create_feature(part_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_3, timestamp)
+    create_feature(part_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_1, timestamp)
     create_feature(part_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
-    create_feature(part_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_3, timestamp)
+    create_feature(part_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_3, timestamp)
 
     print(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
     print_log(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
@@ -61,12 +61,13 @@ def index():
       calculate_psd(tag[0], date)
 
     for tag in tags:
-      execute_arima(tag[0], "8baab334-6e63-487d-91ea-cf8cd7f8b88d")
-      execute_arima(tag[0], "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8")
+      execute_arima(tag[0], "5765a11a-2f89-45dc-a37b-46d384a1ff9e")
       execute_arima(tag[0], "a94a2f9a-d798-4e54-8373-ff68f486f266")
-      execute_arima(tag[0], "88a07a75-1f84-4436-bcf0-12739900bf4a")
-      execute_arima(tag[0], "c0e9494d-443e-4515-ba2a-34a15400c551")
+      execute_arima(tag[0], "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8")
+      execute_arima(tag[0], "8baab334-6e63-487d-91ea-cf8cd7f8b88d")
       execute_arima(tag[0], "5cf62522-a140-4b26-bbfb-d76e4ae10a81")
+      execute_arima(tag[0], "c0e9494d-443e-4515-ba2a-34a15400c551")
+      execute_arima(tag[0], "88a07a75-1f84-4436-bcf0-12739900bf4a")
 
     
       
