@@ -26,10 +26,6 @@ def index():
         # Perbarui current_date
         current_date = datetime.now(pytz.timezone("Asia/Jakarta"))
 
-    # next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=3, minute=0, second=0, microsecond=0)
-    #                   + timedelta(days=1))
-    # wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
-    # time.sleep(wait_time)
 
 if __name__ == "__main__":
   index()

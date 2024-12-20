@@ -5,6 +5,7 @@ from arima import execute_arima
 import numpy as np # type: ignore
 import time
 import pytz
+import schedule # type: ignore
 
 def calculate_psd(part_id, date):
     fft_values = get_fft_value(part_id, date)
@@ -39,47 +40,47 @@ def calculate_psd(part_id, date):
 
     # Iterasi melalui semua timestamp untuk membuat fitur
     create_feature(part_id, "5765a11a-2f89-45dc-a37b-46d384a1ff9e", psd, timestamp)
+    create_feature(part_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_2, timestamp)
+    create_feature(part_id, "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8", total_psd_interval_3, timestamp)
     create_feature(part_id, "a94a2f9a-d798-4e54-8373-ff68f486f266", total_psd_interval_1, timestamp)
-    create_feature(part_id, "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8", total_psd_interval_2, timestamp)
-    create_feature(part_id, "8baab334-6e63-487d-91ea-cf8cd7f8b88d", total_psd_interval_3, timestamp)
-    create_feature(part_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_1, timestamp)
-    create_feature(part_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
     create_feature(part_id, "88a07a75-1f84-4436-bcf0-12739900bf4a", max_psd_interval_3, timestamp)
+    create_feature(part_id, "c0e9494d-443e-4515-ba2a-34a15400c551", max_psd_interval_2, timestamp)
+    create_feature(part_id, "5cf62522-a140-4b26-bbfb-d76e4ae10a81", max_psd_interval_1, timestamp)
 
     print(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
     print_log(f"Total data for part {part_id}: {len(fft_values)} processed successfully.")
+    
+    next_run = schedule.next_run()
+    print(f"Next scheduled run at: {next_run}")
+    print_log(f"Next scheduled run at: {next_run}")
 
+
+def task():
+  date = datetime.now(pytz.timezone("Asia/Jakarta"))
+  tags = get_vibration_parts()
+  for tag in tags:
+    calculate_psd(tag[0], date)
+    
+
+def main():
+  schedule.every().day.at("05:00").do(task)
+  print(f"Starting scheduler at: {datetime.now(pytz.timezone('Asia/Jakarta'))}")
+  print_log(f"Starting scheduler at: {datetime.now(pytz.timezone('Asia/Jakarta'))}")
   
-    
-
-def index():
   while True:
-    date = datetime.now(pytz.timezone("Asia/Jakarta"))
-
-    tags = get_vibration_parts()
-    for tag in tags:
-      calculate_psd(tag[0], date)
-
-    for tag in tags:
-      execute_arima(tag[0], "5765a11a-2f89-45dc-a37b-46d384a1ff9e")
-      execute_arima(tag[0], "a94a2f9a-d798-4e54-8373-ff68f486f266")
-      execute_arima(tag[0], "9b0b9845-e59b-4b85-9ba3-66ff9cb826b8")
-      execute_arima(tag[0], "8baab334-6e63-487d-91ea-cf8cd7f8b88d")
-      execute_arima(tag[0], "5cf62522-a140-4b26-bbfb-d76e4ae10a81")
-      execute_arima(tag[0], "c0e9494d-443e-4515-ba2a-34a15400c551")
-      execute_arima(tag[0], "88a07a75-1f84-4436-bcf0-12739900bf4a")
-
-    
-      
-    next_execution = (datetime.now(pytz.timezone("Asia/Jakarta")).replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=1))
-    wait_time = (next_execution - datetime.now(pytz.timezone("Asia/Jakarta"))).total_seconds()
-
-    print(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
-    print_log(f"Next execution will be at {next_execution.strftime('%Y-%m-%d %H:%M:%S')}")
-
-    time.sleep(wait_time)
-
-
+        try:
+            schedule.run_pending()
+            time.sleep(1)
+            
+        except KeyboardInterrupt:
+            print("Scheduler stopped by user")
+            print_log("Scheduler stopped by user")
+            break
+        except Exception as e:
+            print(f"Scheduler error: {e}")
+            print_log(f"Scheduler error: {e}")
+            time.sleep(60)
+  
 
 if __name__ == "__main__":
-  index()
+  main()
