@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from log import print_log
 from model import *
-from arima import execute_arima
 import numpy as np # type: ignore
 import time
 import pytz
